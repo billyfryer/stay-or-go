@@ -2,7 +2,7 @@
 
 Here are all the files included in this GitHub Repo:
 
-Data Folder - contains the 2015 AA run expectancy data I used as well as the indicator variables I created if the runner was safe or not
+Data Folder - contains the 2015 AA run expectancy data I used as well as the indicator variables I created if the runner was safe or not. SMT Data was in this folder as well but was not allowed to be included in this repository
 
 Graphics Folder - Contains all images as well as the GIFs that were included in the final document
 
