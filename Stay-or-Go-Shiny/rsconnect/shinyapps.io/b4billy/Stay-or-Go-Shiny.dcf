@@ -1,0 +1,13 @@
+name: Stay-or-Go-Shiny
+title: Stay-or-Go-Shiny
+username:
+account: b4billy
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 7114184
+bundleId: 6341417
+url: https://b4billy.shinyapps.io/Stay-or-Go-Shiny/
+when: 1664249712.80218
+lastSyncTime: 1664249712.80218
+asMultiple: FALSE
+asStatic: FALSE
