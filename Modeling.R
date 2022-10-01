@@ -20,6 +20,23 @@ modeling_data <- clean_data %>%
   # Order columns
   select(ADVANCED_2, everything())
 
+### Need the Mean and the SD for each variable in clean_data
+### for the shiny app
+manual_scaling_df <- data.frame(
+  inning = c(mean(clean_data$inning, na.rm = TRUE),
+              sd(clean_data$inning, na.rm = TRUE)),
+  BR2NextBase = c(mean(clean_data$BR2NextBase, na.rm = TRUE),
+             sd(clean_data$BR2NextBase, na.rm = TRUE)),
+  baserunning_speed = c(mean(clean_data$adj_baserunning_speed, na.rm = TRUE),
+                  sd(clean_data$adj_baserunning_speed, na.rm = TRUE)),
+  ball2Base = c(mean(clean_data$ball2Base, na.rm = TRUE),
+                  sd(clean_data$ball2Base, na.rm = TRUE))
+)
+
+# Write to CSV
+# write.csv(manual_scaling_df,
+#           file = "Data/Manual_Scaling.csv",
+#           row.names = FALSE)
 
 ### Splitting Data into training and testing sets
 set.seed(6) # The number of consecutive playoffs the Biscuits
@@ -176,3 +193,7 @@ rm(list=setdiff(ls(), c("importance", "xgboost.model", "clean_data_w_prob")))
 # write.csv(clean_data_w_prob,
 #           file = "Data/Data-With-Prob.csv",
 #           row.names = FALSE)
+
+
+# Save model to RDS
+# saveRDS(xgboost.model, "final-model.rds")

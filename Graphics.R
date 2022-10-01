@@ -29,10 +29,20 @@ importance_clean <- importance %>%
                                  Feature == "BR2NextBase" ~ "Distance to Target Base (Runner)",
                                  Feature == "ball2Base" ~ "Distance to Target Base (Ball)",
                                  TRUE ~ "Baserunner Avg Speed"
-                                 ))
+                                 )) %>% 
+         # Color for bars to correspond on poster
+  mutate(fill.color = case_when(Feature %in% c("currentBase", "gameState",
+                                               "inning") ~ "#D14905",
+                                Feature == "BR2NextBase" ~ "#008473",
+                                Feature == "ball2Base" ~ "#FAC800",
+                                TRUE ~ "#4156A1"
+                                )
+         )
 
 ggplot(importance_clean, aes(x = Gain,
-                             y = reorder(FeatureName, Gain))) +
+                             y = reorder(FeatureName, Gain),
+                             fill = fill.color,
+                             color = fill.color)) +
   geom_bar(stat = "identity") +
   scale_y_discrete(labels = scales::label_wrap(15)) +
   scale_x_continuous(labels = scales::label_percent()) +
@@ -40,7 +50,10 @@ ggplot(importance_clean, aes(x = Gain,
   labs(title = "Accuracy Gained by Variable",
        x = "Accuracy Gained",
        y = "",
-       caption = "Data from SMT")
+       caption = "Data from SMT") +
+  theme(legend.position = "none") +
+  scale_fill_identity() +
+  scale_color_identity()
 
 ggsave(filename = "Graphics/Accuracy-Gained.png",
        width = 4,

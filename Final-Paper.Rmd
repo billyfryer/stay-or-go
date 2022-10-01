@@ -15,7 +15,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Introduction
 
-|    With 2 outs in the bottom of the ninth, the Biloxi Shuckers (AA MIL) were batting down 1 to the Montgomery Biscuits (AA Rays) in a July game very important for the 2nd Half Divisional Title. With runners on first and second - both with decent speed - Thomas Dillard singled to right field. The runner on second was waved home and right fielder Kameron Misner's throw was on target to get the runner by two steps to end the game. The screenshot below is from MiLB TV.
+|    With 2 outs in the bottom of the ninth, the Biloxi Shuckers (AA MIL) were batting down 1 to the Montgomery Biscuits (AA Rays) in a July game coming down the stretch for the 2nd Half Divisional Title. With runners on first and second - both with decent speed - Thomas Dillard singled to right field. The runner on second was waved home and right fielder Kameron Misner's throw was on target to get the runner by two steps to end the game. The screenshot below is from MiLB TV.
 
 ```{r, echo=FALSE, out.width="90%", fig.align='center'}
 knitr::include_graphics("Graphics/Intro-Screenshot.png")
@@ -79,7 +79,7 @@ knitr::include_graphics("Graphics/Accuracy-Gained.png")
 
 # Run Expectancy
 
-|    Run expectancies are the amount of runs that a team could expect for the rest of the inning based on the current game state. For example, a team has a higher run expectancy when the bases are loaded with 0 outs than with no one on and 2 outs.  I used the publicly available Minor League Baseball play by play information data to calculate run expectancies from the 2015 AA season which is shown in the chart below.
+|    Run expectancies are the amount of runs that a team could expect for the rest of the inning based on the current game state. For example, a team has a higher run expectancy when the bases are loaded with 0 outs than with no one on and 2 outs. I used the publicly available Minor League Baseball play by play information data to calculate run expectancies from the 2015 AA season which is shown in the chart below.
 
 ```{r, echo=FALSE, out.height="40%", fig.align='center'}
 knitr::include_graphics("Graphics/Run-Expectancies.png")
@@ -109,6 +109,10 @@ knitr::include_graphics("Graphics/Run-Expectancies.png")
 
 \newpage
 
+# Reference
+
+Marchi, M., Albert, J., & Baumer, B. S. (2019). Chapter 5: Value of Plays Using Run Expectancy. In Analyzing Baseball Data with R (Second, pp. 111–136). essay, Taylor & Francis Group, LLC.
+
 # Appendix A: Modeling Expanded
 
 |    Because I wanted to model probabilities, I knew I need some type of a classification model. So I considered 4 different types of models when performing this analysis: a logistic regression model, a naive bayes classifier, a random forest, and an xgboost model. I trained each model on a training data set containing 60% of the data from the 779 plays, leaving the other 40% for later testing. All numeric variables were centered and scaled before analysis. For the random forest model, I grew 100 trees. For the xgboost model, I converted Game State from a factor variable to be a series of indicator variables to meet the requirement of only numeric values in the xgboost model. I only did 10 rounds of boosting in the xgboost model and did not tune the model afterwards. After modeling, I selected the model based on the accuracy of the predictions on the test set shown below. The xgboost model had the highest classification accuracy on the test set as well as a logloss of 0.290046. With further model tuning, I am sure the accuracy would increase and the logloss could decrease dramatically. For the accuracy gained chart in the Modeling section of this paper, I combined the accuracy gained for each game state into 1 value for visualization sake.
@@ -123,13 +127,13 @@ knitr::include_graphics("Graphics/Model-Accuracy.png")
 
 To calculate the change in run expectancy, the following formula is used:
 
-<br> **[RE(Success) x Pr(Success) + RE(Failure) x (1-Pr(Success))] - RE(No Attempt)**
+<br> **[RE(Success) x Pr(Success) + RS(Success)] + RE(Failure) x (1-Pr(Success)) + RS(Success)] - [RE(No Attempt) + RS(No Attempt)]**
 
-where **RE()** is the run expectancy of a given game state and **Pr(Success)** is the probability of advancing 2 bases as given by the model.
+Where: **RE()** is the run expectancy of a given game state, **Pr(Success)** is the probability of advancing 2 bases as given by the model and **RS()** represents the number of runs scored on the play.
 
-|    The first half of this formula gives the expected run expectancy given that the runner attempts to advance to the target base. The second half of the formula (**RE(No Attempt)**) is the run expectancy given the runner stops at the intermediate base. This helps determine if the reward of the risk is worth more than staying put. Let's work out an example together - the Go Example. As stated previously, our game state before the play is "100" because the only runner on was on first base and we assume that there was 1 out. From the model, the probability that the runner would be safe at 3rd base is 88%. Now let's look at the possible outcomes. If the runner decides to try and advance 2 bases, this means our possible game states after the throw are "101, 1 out" if the runner is safe or "100, 2 outs" if the runner is thrown out. If the runner decides not to attempt to take third, the games state will be "110, 1 out". If the information is plugged into the formula, it looks like this.
+|    The first half of this formula gives the expected run expectancy given that the runner attempts to advance to the target base. The second half of the formula (**RE(No Attempt)**) is the run expectancy given the runner stops at the intermediate base. This helps determine if the reward of the risk is worth more than staying put. Let's work out an example together - the Go Example. As stated previously, our game state before the play is "100" because the only runner on was on first base and we assume that there was 1 out. From the model, the probability that the runner would be safe at 3rd base is 88%. Now let's look at the possible outcomes. If the runner decides to try and advance 2 bases, this means our possible game states after the throw are "101, 1 out" if the runner is safe or "100, 2 outs" if the runner is thrown out. If the runner decides not to attempt to take third, the games state will be "110, 1 out". Regardless of situation, no runs are scored. If the information is plugged into the formula, it looks like this.
 
-<br> **[RE(101, 1 out) x (0.88) + RE(100, 2 outs) x (1-0.88)] - RE(110, 1 out)**
+<br> **[RE(101, 1 out) x (0.88) + 0 + RE(100, 2 outs) x (1-0.88) + 0] - [RE(110, 1 out) + 0]**
 
 The run expectancy table is used to evaluate the last three missing pieces of information. The formula then reduces to:
 
