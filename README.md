@@ -30,6 +30,8 @@ Combine-Datasets.R - The way I set up this project was to have a lot of scripts 
 
 Data Challenge Poster.ppt - Powerpoint file used to design final poster for UConn Sports Analytics Symposium
 
+Data Challenge Poster.png - PNG Version of my Research Poster presented at the UConn Sports Analytics Symposium October 8, 2022 
+
 Final-Paper.Rmd - R Markdown document that I used to create my final paper
 
 Find-Baserunners-From-PBP.R -Found what baserunner (by player id) was on what base for a given game_str and play_id
